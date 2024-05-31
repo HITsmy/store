@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--用于对应UserMapper接口-->
+<mapper namespace="com.hit.store.mapper.CartMapper">
+    <resultMap id="cartEntityMap" type="com.hit.store.entity.Cart">
+        <id column="cid" property="cid"></id>
+        <result column="is_delete" property="isDelete"></result>
+        <result column="created_user" property="createdUser"></result>
+        <result column="created_time" property="createdTime"></result>
+        <result column="modified_user" property="modifiedUser"></result>
+        <result column="modified_time" property="modifiedTime"></result>
+    </resultMap>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="cid">
+        INSERT INTO t_cart(uid, pid, price, num, created_user, created_time, modified_user, modified_time)
+        VALUES(#{uid}, #{pid}, #{price}, #{num}, #{createdUser}, #{createdTime}, #{modifiedUser}, #{modifiedTime})
+    </insert>
+    <select id="findByUidAndPid" resultMap="cartEntityMap">
+        SELECT * FROM t_cart WHERE uid = #{uid} AND pid = #{pid}
+    </select>
+    <update id="updateByCid">
+        UPDATE t_cart SET num = #{num}, modified_user = #{modified_user}, modified_time = #{modified_time} WHERE cid = #{cid}
+    </update>
+
+    <delete id="deleteByCid">
+        DELETE FROM t_cart WHERE cid = #{cid}
+    </delete>
+
+    <select id="findCartVOByUid" resultType="com.hit.store.vo.CartVO">
+        SELECT cid, uid, pid, t_cart.price, t_cart.num, t_product.title, t_product.image,
+        t_product.price AS realPrice FROM t_cart LEFT JOIN t_product ON t_cart.pid = t_product.id
+        WHERE uid = #{uid} ORDER BY t_cart.created_time DESC
+    </select>
+
+    <select id="findCartVOByCids" resultType="com.hit.store.vo.CartVO">
+        SELECT cid, uid, pid, t_cart.price, t_cart.num, t_product.title, t_product.image,
+        t_product.price AS realPrice FROM t_cart LEFT JOIN t_product ON t_cart.pid = t_product.id
+        WHERE cid IN (
+        <foreach collection="array" item="cid" separator=",">
+            #{cid}
+        </foreach>
+        ) ORDER BY t_cart.created_time DESC
+    </select>
+
+    <select id="findByCid" resultMap="cartEntityMap">
+        SELECT * FROM t_cart WHERE cid = #{cid}
+    </select>
+</mapper>

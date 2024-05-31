@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--用于对应AddressMapper接口-->
+<mapper namespace="com.hit.store.mapper.DistrictMapper">
+    <select id="getByParent" resultType="com.hit.store.entity.District">
+        SELECT * FROM t_dict_district WHERE parent = #{parent}
+    </select>
+    <select id="findNameByCode">
+        SELECT name FROM t_dict_district WHERE code = #{code}
+    </select>
+</mapper>

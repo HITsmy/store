@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--用于对应UserMapper接口-->
+<mapper namespace="com.hit.store.mapper.UserMapper">
+    <resultMap id="userEntityMap" type="com.hit.store.entity.User">
+        <id column="uid" property="uid"></id>
+        <result column="is_delete" property="isDelete"></result>
+        <result column="created_user" property="createdUser"></result>
+        <result column="created_time" property="createdTime"></result>
+        <result column="modified_user" property="modifiedUser"></result>
+        <result column="modified_time" property="modifiedTime"></result>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="uid">
+        INSERT INTO t_user(username, password, salt, phone, email, gender, avatar, is_delete, created_user, created_time, modified_user, modified_time)
+        VALUES(
+            #{username}, #{password}, #{salt}, #{phone}, #{email}, #{gender}, #{avatar}, #{isDelete}, #{createdUser}, #{createdTime}, #{modifiedUser}, #{modifiedTime}
+        )
+    </insert>
+
+    <update id="updatePassword">
+        UPDATE t_user SET password = #{password}, modified_user = #{modifiedUser},
+        modified_time = #{modifiedTime} WHERE uid = #{uid}
+    </update>
+    <update id="updateInfo">
+        UPDATE t_user SET phone = #{phone}, email = #{email}, gender = #{gender},
+        modified_user = #{modifiedUser}, modified_time = #{modifiedTime} WHERE uid = #{uid}
+    </update>
+    <update id="delete">
+        UPDATE t_user SET is_delete = 1 WHERE uid = #{uid}
+    </update>
+    <update id="updateAvatar">
+        UPDATE t_user SET avatar = #{avatar}, modified_user = #{modifiedUser},
+        modified_time=#{modifiedTime} WHERE uid = #{uid}
+    </update>
+
+    <!--执行结果可以是一个对象， 多个对象-->
+    <!--
+        resultType：表示查询结果类型，指定对应映射类的类型
+        resultMap：表资源和映射类对象属性不一致时，采用自定义查询结果集的映射规则
+    -->
+
+    <select id="findByUsername" resultType="com.hit.store.entity.User" resultMap="userEntityMap">
+        SELECT * FROM t_user WHERE username=#{username}
+    </select>
+    <select id="findByUid" resultType="com.hit.store.entity.User" resultMap="userEntityMap">
+        SELECT * FROM t_user WHERE uid=#{uid}
+    </select>
+</mapper>
